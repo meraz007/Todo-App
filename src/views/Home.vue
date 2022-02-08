@@ -4,86 +4,29 @@
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-xl-10">
-
         <div class="card">
           <div class="card-body p-5">
-            <!-- Tabs navs -->
-            <ul class="nav nav-tabs mb-4 pb-2" id="ex1" role="tablist">
-              <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab"
-                  aria-controls="ex1-tabs-1" aria-selected="true">All</a>
-              </li>
-              <li class="nav-item" role="presentation">
-                <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2" role="tab"
-                  aria-controls="ex1-tabs-2" aria-selected="false">Active</a>
-              </li>
-              <li class="nav-item" role="presentation">
-                <a class="nav-link" id="ex1-tab-3" data-mdb-toggle="tab" href="#ex1-tabs-3" role="tab"
-                  aria-controls="ex1-tabs-3" aria-selected="false">Completed</a>
+            <Header />
+            <p class="text-muted pb-2"></p>
+            <ul>
+              <li 
+              class="list-group-item d-flex
+               align-items-center border-0 mb-2
+              rounded-pill shadow p-3 mb-3 bg-body"
+              v-for="(item,index) in items" :key="index"
+              :class="{done: item.done}"
+              @mouseover="showItem(index)"
+              >
+                <input class="form-check-input me-2 rounded-circle" type="checkbox" @click="workDone(item)" />
+                {{item.title}}
+                <button v-if="isVisible" class="btn btn-danger btn-sm ms-auto" @click="DeleteItem(index)">
+                  X
+                </button>
               </li>
             </ul>
-            <!-- Tabs navs -->
-
-            <!-- Tabs content -->
-            <div class="tab-content" id="ex1-content">
-              <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1">
-                <ul class="list-group mb-0">
-                  <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
-                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." checked />
-                    <s>Cras justo odio</s>
-                  </li>
-                  <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
-                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." checked />
-                    <s>Dapibus ac facilisis in</s>
-                  </li>
-                  <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
-                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                    Morbi leo risus
-                  </li>
-                  <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
-                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                    Porta ac consectetur ac
-                  </li>
-                  <li class="list-group-item d-flex align-items-center border-0 mb-0 rounded" style="background-color: #f4f6f7;">
-                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                    Vestibulum at eros
-                  </li>
-                </ul>
-              </div>
-              <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
-                <ul class="list-group mb-0">
-                  <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
-                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                    Morbi leo risus
-                  </li>
-                  <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
-                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                    Porta ac consectetur ac
-                  </li>
-                  <li class="list-group-item d-flex align-items-center border-0 mb-0 rounded" style="background-color: #f4f6f7;">
-                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." />
-                    Vestibulum at eros
-                  </li>
-                </ul>
-              </div>
-              <div class="tab-pane fade" id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
-                <ul class="list-group mb-0">
-                  <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
-                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." checked />
-                    <s>Cras justo odio</s>
-                  </li>
-                  <li class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
-                    <input class="form-check-input me-2" type="checkbox" value="" aria-label="..." checked />
-                    <s>Dapibus ac facilisis in</s>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <!-- Tabs content -->
-
+            <InputItem/>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -92,12 +35,41 @@
 </template>
 
 <script>
-
+import axios from 'axios'
+import Header from '../components/Header.vue'
+import InputItem from '../components/InputItem.vue'
 export default {
-  name: 'Home',
-  components: {
-    
-  }
+  components:{
+    Header,
+    InputItem
+  },
+  data(){
+    return{
+      url:"https://todo-backend-laravel.herokuapp.com/api",
+      items:[],
+      responseData:null,
+      isVisible:false
+    }
+  },
+  mounted(){
+    this.getItem()
+  },
+  methods:{
+    getItem(){
+      axios.get(this.url).then(response=>{
+        this.items=response.data
+      })
+    },
+    DeleteItem(index){
+      this.items.splice(index,1)
+    },
+    workDone(item){
+      item.done =!item.done
+    },
+    showItem(index){
+      this.items[index].isVisible= !this.items[index].isVisible
+    }
+  },
 }
 </script>
 
@@ -109,5 +81,8 @@ export default {
     radial-gradient(100% 164.72% at 100% 100%, #6100ff 0%, #00ff57 100%),
     radial-gradient(100% 148.07% at 0% 0%, #fff500 0%, #51d500 100%);
   background-blend-mode: screen, color-dodge, overlay, difference, normal;
+}
+.done{
+  text-decoration: line-through;
 }
 </style>
