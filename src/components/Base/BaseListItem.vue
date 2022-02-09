@@ -30,7 +30,7 @@ export default {
       url:"https://todo-backend-laravel.herokuapp.com/api",
       items:[],
       responseData:null,
-      isVisible:true
+      isVisible:true,
     }
   },
   mounted(){

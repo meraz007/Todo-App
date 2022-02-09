@@ -15,7 +15,7 @@
       <div class="modal-body">
           <form @submit.prevent="UserItem">
               <input type="text" class="form-control" v-model="singleItem.title">
-              <button type="submit" class="btn btn-success">Submit</button>
+              <button type="submit" class="btn btn-success mt-2">Submit</button>
           </form>
       </div>
       <div class="modal-footer">
@@ -43,6 +43,7 @@ export default {
         axios.post(this.url,this.singleItem).then(response=>{
             this.responseData=response.data
             this.singleItem.title=""
+            alert("Item Added")
         })
     }
    }
