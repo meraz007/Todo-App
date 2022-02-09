@@ -7,9 +7,6 @@
         <div class="card">
           <div class="card-body p-5">
             <Header />
-            <BaseButton>All</BaseButton>
-            <BaseButton>Active</BaseButton>
-            <BaseButton>Completed</BaseButton>
             <ul>
               <BaseListItem />
             </ul>
@@ -24,15 +21,14 @@
 </template>
 
 <script>
-import BaseListItem from '../components/BaseListItem.vue'
+import BaseListItem from '../components/Base/BaseListItem.vue'
 import Header from '../components/Header.vue'
 import InputItem from '../components/InputItem.vue'
-import BaseButton from '../components/BaseButton.vue'
+
 export default {
   components:{
     Header,
     InputItem,
-    BaseButton,
     BaseListItem
   },
 }
