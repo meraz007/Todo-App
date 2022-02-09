@@ -7,22 +7,11 @@
         <div class="card">
           <div class="card-body p-5">
             <Header />
-            <p class="text-muted pb-2"></p>
+            <BaseButton>All</BaseButton>
+            <BaseButton>Active</BaseButton>
+            <BaseButton>Completed</BaseButton>
             <ul>
-              <li 
-              class="list-group-item d-flex
-               align-items-center border-0 mb-2
-              rounded-pill shadow p-3 mb-3 bg-body"
-              v-for="(item,index) in items" :key="index"
-              :class="{done: item.done}"
-              @mouseover="showItem(index)"
-              >
-                <input class="form-check-input me-2 rounded-circle" type="checkbox" @click="workDone(item)" />
-                {{item.title}}
-                <button v-if="isVisible" class="btn btn-danger btn-sm ms-auto" @click="DeleteItem(index)">
-                  X
-                </button>
-              </li>
+              <BaseListItem />
             </ul>
             <InputItem/>
           </div>
@@ -35,40 +24,16 @@
 </template>
 
 <script>
-import axios from 'axios'
+import BaseListItem from '../components/BaseListItem.vue'
 import Header from '../components/Header.vue'
 import InputItem from '../components/InputItem.vue'
+import BaseButton from '../components/BaseButton.vue'
 export default {
   components:{
     Header,
-    InputItem
-  },
-  data(){
-    return{
-      url:"https://todo-backend-laravel.herokuapp.com/api",
-      items:[],
-      responseData:null,
-      isVisible:false
-    }
-  },
-  mounted(){
-    this.getItem()
-  },
-  methods:{
-    getItem(){
-      axios.get(this.url).then(response=>{
-        this.items=response.data
-      })
-    },
-    DeleteItem(index){
-      this.items.splice(index,1)
-    },
-    workDone(item){
-      item.done =!item.done
-    },
-    showItem(index){
-      this.items[index].isVisible= !this.items[index].isVisible
-    }
+    InputItem,
+    BaseButton,
+    BaseListItem
   },
 }
 </script>
@@ -82,7 +47,5 @@ export default {
     radial-gradient(100% 148.07% at 0% 0%, #fff500 0%, #51d500 100%);
   background-blend-mode: screen, color-dodge, overlay, difference, normal;
 }
-.done{
-  text-decoration: line-through;
-}
+
 </style>
